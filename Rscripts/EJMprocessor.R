@@ -18,49 +18,49 @@ substrEnd <- function(x, n){
 }
 
 ## Number of pages of listings (user needs to adjust each time)
-nwebpages <- 5
+nwebpages <- 6
 
 for (j in 1:nwebpages) {
-	## Do initial extraction from EJM website
-	ejmurl   <- paste0("https://econjobmarket.org/postings.php?region=0&field=0&search=0&refined=0&limit=50&page=",j)
-	temp     <- read_html(ejmurl)
-	alldata  <- temp %>% html_nodes("#right_col") %>% as.character() #returns listings as character vector
+    ## Do initial extraction from EJM website
+    ejmurl   <- paste0("https://econjobmarket.org/postings.php?region=0&field=0&search=0&refined=0&limit=50&page=",j)
+    temp     <- read_html(ejmurl)
+    alldata  <- temp %>% html_nodes("#right_col") %>% as.character() #returns listings as character vector
 
-	## Capture listing titles
-	listings <- sapply(getNodeSet(htmlParse(alldata), "//a"), xmlValue)
-	tester   <- sapply(getNodeSet(htmlParse(alldata), "//strong"), xmlValue)
-	tester1  <- sapply(getNodeSet(htmlParse(alldata), "//span"), xmlValue)
-	tester2  <- sapply(getNodeSet(htmlParse(alldata), "//br"), xmlValue)
+    ## Capture listing titles
+    listings <- sapply(getNodeSet(htmlParse(alldata), "//a"), xmlValue)
+    tester   <- sapply(getNodeSet(htmlParse(alldata), "//strong"), xmlValue)
+    tester1  <- sapply(getNodeSet(htmlParse(alldata), "//span"), xmlValue)
+    tester2  <- sapply(getNodeSet(htmlParse(alldata), "//br"), xmlValue)
 
-	## Create URL for each listing
-	alldata  <- gsub("<div id=\"right_col\">\n  <span>\n    ","",alldata)
-	urls     <- matrix("https://econjobmarket.org/postings.php",length(alldata),1) 
-	urlsuffx <- as.matrix(substr(alldata,10,20))
-	urlfinal <- paste0(urls,urlsuffx)
+    ## Create URL for each listing
+    # alldata  <- gsub("<div id=\"right_col\">\n  <span>\n    ","",alldata)
+    urls     <- matrix("https://econjobmarket.org/postings.php",length(alldata),1) 
+    urlsuffx <- as.matrix(substr(alldata,37,47))
+    urlfinal <- paste0(urls,urlsuffx)
 
-	## Capture employer names and full text of listing
-	employers <- matrix("",length(alldata),1)
-	fulltext <- matrix("",length(alldata),1)
-	for (i in 1:length(alldata)) {
-		temp1        <- read_html(urlfinal[i])
-		temp2 <- temp1 %>% html_nodes("span")
-		employers[i] <- xmlValue(getNodeSet(htmlParse(as.character(temp2[3])), "//span")[[1]])
-		fulltext[i] <- temp1 %>% html_nodes("#contentLeft p") %>% as.character()
-	}
-	fulltext <- sapply(getNodeSet(htmlParse(fulltext), "//p"), xmlValue)
+    ## Capture employer names and full text of listing
+    employers <- matrix("",length(alldata),1)
+    fulltext <- matrix("",length(alldata),1)
+    for (i in 1:length(alldata)) {
+        temp1        <- read_html(urlfinal[i])
+        temp2 <- temp1 %>% html_nodes("span")
+        employers[i] <- xmlValue(getNodeSet(htmlParse(as.character(temp2[3])), "//span")[[1]])
+        fulltext[i] <- temp1 %>% html_nodes("#contentLeft p") %>% as.character()
+    }
+    fulltext <- sapply(getNodeSet(htmlParse(fulltext), "//p"), xmlValue)
 
-	## Capture application deadlines
-	deadlines <- temp %>% html_nodes("span span") %>% as.character()
-	deadlines <- deadlines[seq(2,length(deadlines),2)]
-	deadlines <- sapply(getNodeSet(htmlParse(deadlines), "//span"), xmlValue)
-	deadlines <- as.POSIXct(strptime(deadlines, format="%b %d, %Y"))
+    ## Capture application deadlines
+    deadlines <- temp %>% html_nodes("span span") %>% as.character()
+    deadlines <- deadlines[seq(2,length(deadlines),2)]
+    deadlines <- sapply(getNodeSet(htmlParse(deadlines), "//span"), xmlValue)
+    deadlines <- as.POSIXct(strptime(deadlines, format="%b %d, %Y"))
 
-	## Concatenate into final data frame
-	nam <- paste0("EJM", j)
-	assign(nam, data.frame(employers,listings,deadlines,urlfinal,fulltext))
+    ## Concatenate into final data frame
+    nam <- paste0("EJM", j)
+    assign(nam, data.frame(employers,listings,deadlines,urlfinal,fulltext))
 }
 
-EJM <- rbind(EJM1,EJM2,EJM3,EJM4,EJM5) #,EJM6
+EJM <- rbind(EJM1,EJM2,EJM3,EJM4,EJM5,EJM6)
 colnames(EJM) <- c("Institution","Position","Deadline","URL","full_text")
 
 ## Capture the number of listings printed on EJM homepage, for error-checking purposes
