@@ -44,7 +44,7 @@ for (j in 1:nwebpages) {
     for (i in 1:length(alldata)) {
         temp1        <- read_html(urlfinal[i])
         temp2 <- temp1 %>% html_nodes("span")
-        employers[i] <- xmlValue(getNodeSet(htmlParse(as.character(temp2[3])), "//span")[[1]])
+        employers[i] <- xmlValue(getNodeSet(htmlParse(as.character(temp2[4])), "//span")[[1]])
         fulltext[i] <- temp1 %>% html_nodes("#contentLeft p") %>% as.character()
     }
     fulltext <- sapply(getNodeSet(htmlParse(fulltext), "//p"), xmlValue)
