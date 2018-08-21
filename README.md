@@ -40,7 +40,7 @@ This code has been extensively tested. If you encounter errors they are likely t
 * If you encounter an error in the EJM file, it is likely because you need to adjust the variable `nwebpages` to match with the current number of EJM listings.
 
 # Disclaimer
-Along with the standard GNU-style disclaimers, I add that the scraping code is written to be compatible with these websites as of Dec 1, 2016. Any future changes to the style and/or structure of these websites might invalidate the code as presently written.
+Along with the standard GNU-style disclaimers, I add that the scraping code is written to be compatible with these websites as of Dec 1, 2017. Any future changes to the style and/or structure of these websites might invalidate the code as presently written.
 
 # Acknowledgements
-This repository is largely made possible by the generosity of Eduardo Jardim and Katya Roschina, who originally shared their R code with me. They engineered their version using some code from <http://freigeist.devmag.net>, which I also gratefully acknowledge.
+This repository is largely made possible by the generosity of Eduardo and Katya Jardim, who originally shared their R code with me. They engineered their version using some code from <http://freigeist.devmag.net>, which I also gratefully acknowledge.
